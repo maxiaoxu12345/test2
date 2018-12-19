@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Sql的映射文件 -->
+<mapper namespace="com.eccl.ssm.Mapper.EmployeeMapper">
+	
+	<select id="goLogin" resultType="com.eccl.ssm.pojo.User" parameterType="String">
+		select * from user where username=#{string}
+	</select>
+	<update id="editpwd">
+		update user set password=#{lname} where username=#{uname}
+	</update>
+	<select id="findUserByOne" resultType="com.eccl.ssm.pojo.User">
+		select u.depart,u.role,t.name,t.high_name,t.yeji,
+t.quanjv,t.daituan,t.shouquan,t.zeren,t.gongzuo,
+t.xietiao,t.yingbian,t.zuzhi,t.xuexi
+ from user u,test t where
+    u.name=t.high_name and high_name=#{String}
+	</select>
+	<insert id="saveTest">
+		insert into test (name,high_name,yeji,quanjv,daituan,shouquan,zeren,gongzuo,xietiao,yingbian,zuzhi,xuexi)
+		values (#{name},#{high_name},#{yeji},#{quanjv},#{daituan},#{shouquan},#{zeren},#{gongzuo},#{xietiao},#{yingbian},#{zuzhi},#{xuexi})
+		
+	</insert>
+	<select id="isSave" resultType="int" parameterType="String">
+		select count(*) from test where high_name=#{string}
+	</select>
+	<update id="updateTest">
+		update test set yeji=#{yeji},quanjv=#{quanjv},
+		daituan=#{daituan},shouquan=#{shouquan},zeren=#{zeren},
+		gongzuo=#{gongzuo},xietiao=#{xietiao},yingbian=#{yingbian},zuzhi=#{zuzhi},xuexi=#{xuexi}
+		 where  name=#{name} and high_name=#{high_name}
+	</update>
+	<select id="findScore" resultType="com.eccl.ssm.pojo.Test" parameterType="String">
+		select * from test where high_name=#{string}
+	</select>
+	<select id="findAllUser" resultType="com.eccl.ssm.pojo.User">
+		select * from user where role!='领导'
+	</select>
+	<insert id="setUpTable">
+		insert into result (depart,role,name) values(#{depart},#{role},#{name})
+	</insert>
+	<select id="selectTestResultForHigh" resultType="Double">
+		SELECT 0.7*avg((yeji+quanjv+daituan+shouquan+zeren+gongzuo+xietiao
+			+yingbian+zuzhi+xuexi)) AS zongfen FROM test WHERE high_name IN ('瓮总','胡文胜','王英泽','谢玲玉')
+				AND NAME = #{name}
+	</select>
+	<update id="updateTestResultForHigh" parameterType="Map">
+		UPDATE result SET high_test = #{a}
+			where NAME = #{name}
+	</update>
+	<update id="updateTestResultForLevel">
+		UPDATE result SET level_test=
+				#{level}
+			where NAME = #{name}
+	</update>
+	<update id="updateTestResultForFinal">
+		UPDATE result SET final_test=
+								(high_test+level_test)
+			where NAME = #{name}
+	</update>
+	<select id="selectLevel" resultType="Double">
+		SELECT ((yeji+quanjv+daituan+shouquan+zeren+gongzuo+xietiao
+			+yingbian+zuzhi+xuexi)) AS zongfen FROM test WHERE high_name NOT IN ('瓮总','胡文胜','王英泽','谢玲玉')
+				AND NAME = #{name}
+	</select>
+	<select id="findAllScore" resultType="com.eccl.ssm.pojo.Result">
+		select * from result order by final_test desc
+	</select>
+	<select id="findWhoNoFind" resultType="String">
+		SELECT 
+  NAME 
+FROM
+  (SELECT 
+    u.name,
+    cou.c,
+    cou1.c AS c1 
+  FROM
+    USER u 
+    LEFT JOIN 
+      (SELECT 
+        high_name,
+        COUNT(1) AS c 
+      FROM
+        test 
+      GROUP BY high_name) cou 
+      ON u.name = cou.high_name 
+    LEFT JOIN 
+      (SELECT 
+        t.high_name,
+        COUNT(1) AS c 
+      FROM
+        (SELECT 
+          high_name 
+        FROM
+          test te 
+        WHERE yeji = 0 
+          OR quanjv = 0 
+          OR daituan = 0 
+          OR shouquan = 0 
+          OR zeren = 0 
+          OR gongzuo = 0 
+          OR xietiao = 0 
+          OR yingbian = 0 
+          OR zuzhi = 0 
+          OR xuexi = 0) t 
+      GROUP BY t.high_name) cou1 
+      ON u.name = cou1.high_name) tt 
+WHERE tt.c IS NULL 
+  OR tt.c1 IS NOT NULL ;
+	</select>
+</mapper>
