@@ -43,72 +43,72 @@ t.xietiao,t.yingbian,t.zuzhi,t.xuexi
 		insert into result (depart,role,name) values(#{depart},#{role},#{name})
 	</insert>
 	<select id="selectTestResultForHigh" resultType="Double">
-		SELECT 0.7*avg((yeji+quanjv+daituan+shouquan+zeren+gongzuo+xietiao
-			+yingbian+zuzhi+xuexi)) AS zongfen FROM test WHERE high_name IN ('瓮总','胡文胜','王英泽','谢玲玉')
-				AND NAME = #{name}
+		select 0.7*avg((yeji+quanjv+daituan+shouquan+zeren+gongzuo+xietiao
+			+yingbian+zuzhi+xuexi)) as zongfen from test where high_name in ('瓮总','胡文胜','王英泽','谢玲玉')
+				and name = #{name}
 	</select>
 	<update id="updateTestResultForHigh" parameterType="Map">
-		UPDATE result SET high_test = #{a}
-			where NAME = #{name}
+		update result set high_test = #{a}
+			where name = #{name}
 	</update>
 	<update id="updateTestResultForLevel">
-		UPDATE result SET level_test=
+		update result set level_test=
 				#{level}
-			where NAME = #{name}
+			where name = #{name}
 	</update>
 	<update id="updateTestResultForFinal">
-		UPDATE result SET final_test=
+		update result set final_test=
 								(high_test+level_test)
-			where NAME = #{name}
+			where name = #{name}
 	</update>
 	<select id="selectLevel" resultType="Double">
-		SELECT ((yeji+quanjv+daituan+shouquan+zeren+gongzuo+xietiao
-			+yingbian+zuzhi+xuexi)) AS zongfen FROM test WHERE high_name NOT IN ('瓮总','胡文胜','王英泽','谢玲玉')
-				AND NAME = #{name}
+		select ((yeji+quanjv+daituan+shouquan+zeren+gongzuo+xietiao
+			+yingbian+zuzhi+xuexi)) as zongfen from test where high_name not in ('瓮总','胡文胜','王英泽','谢玲玉')
+				and name = #{name}
 	</select>
 	<select id="findAllScore" resultType="com.eccl.ssm.pojo.Result">
 		select * from result order by final_test desc
 	</select>
 	<select id="findWhoNoFind" resultType="String">
-		SELECT 
-  NAME 
-FROM
-  (SELECT 
+		select 
+  name 
+from
+  (select 
     u.name,
     cou.c,
-    cou1.c AS c1 
-  FROM
-    USER u 
-    LEFT JOIN 
-      (SELECT 
+    cou1.c as c1 
+  from
+    user u 
+    left join 
+      (select 
         high_name,
-        COUNT(1) AS c 
-      FROM
+        count(1) as c 
+      from
         test 
-      GROUP BY high_name) cou 
-      ON u.name = cou.high_name 
-    LEFT JOIN 
-      (SELECT 
+      group by high_name) cou 
+      on u.name = cou.high_name 
+    left join 
+      (select 
         t.high_name,
-        COUNT(1) AS c 
-      FROM
-        (SELECT 
+        count(1) as c 
+      from
+        (select 
           high_name 
-        FROM
+        from
           test te 
-        WHERE yeji = 0 
-          OR quanjv = 0 
-          OR daituan = 0 
-          OR shouquan = 0 
-          OR zeren = 0 
-          OR gongzuo = 0 
-          OR xietiao = 0 
-          OR yingbian = 0 
-          OR zuzhi = 0 
-          OR xuexi = 0) t 
-      GROUP BY t.high_name) cou1 
-      ON u.name = cou1.high_name) tt 
-WHERE tt.c IS NULL 
-  OR tt.c1 IS NOT NULL ;
+        where yeji = 0 
+          or quanjv = 0 
+          or daituan = 0 
+          or shouquan = 0 
+          or zeren = 0 
+          or gongzuo = 0 
+          or xietiao = 0 
+          or yingbian = 0 
+          or zuzhi = 0 
+          or xuexi = 0) t 
+      group by t.high_name) cou1 
+      on u.name = cou1.high_name) tt 
+where tt.c is null 
+  or tt.c1 is not null ;
 	</select>
 </mapper>
