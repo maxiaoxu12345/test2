@@ -38,7 +38,7 @@
      <form action="${pageContext.request.contextPath}/login.action" method="post" style="margin:100px 0px 0px 400px;padding-top: 69px;padding-bottom: 65px;" >
        
        <table class="table table-hover table-bordered" style="width: 60%">
-     	<h3>中层管理测评系统</h3>  ${tip}
+     	<h3>中层管理测评系统</h3>  ${tip2}
          <tr>
            <td style="text-align: center;">用户：</td>
            <td><input type="text" id="f_user_Dn" name="empName"  class="must" onfocus="$(this).val('')"></td>

@@ -13,11 +13,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update user set password=#{lname} where username=#{uname}
 	</update>
 	<select id="findUserByOne" resultType="com.eccl.ssm.pojo.User">
-		select u.depart,u.role,t.name,t.high_name,t.yeji,
+select u.depart,u.role,u.name,t.high_name,t.yeji,
 t.quanjv,t.daituan,t.shouquan,t.zeren,t.gongzuo,
 t.xietiao,t.yingbian,t.zuzhi,t.xuexi
- from user u,test t where
-    u.name=t.high_name and high_name=#{String}
+ from (select depart,role,name from user where role!='领导') u left join test t on
+    u.name=t.name and high_name=#{string}
 	</select>
 	<insert id="saveTest">
 		insert into test (name,high_name,yeji,quanjv,daituan,shouquan,zeren,gongzuo,xietiao,yingbian,zuzhi,xuexi)

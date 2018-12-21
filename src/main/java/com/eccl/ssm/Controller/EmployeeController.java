@@ -51,7 +51,7 @@ public class EmployeeController {
 		switch (loginEmp.size()) {
 		case 0:
 			returnUrl = "login";
-			request.setAttribute("tip", "用户不存在,重新输入");
+			request.setAttribute("tip2", "用户不存在,重新输入");
 			break; // 不存在当前用户
 		case 1:
 			if (loginEmp.get(0).getPassword().equals(pwd)) {
@@ -106,6 +106,7 @@ public class EmployeeController {
 	public String testForLevel(HttpServletRequest request, HttpSession session, HttpServletResponse response) {
 		User user = (User) request.getSession().getAttribute("user");
 		List<User> list = eService.findUserByOne(user.getName());
+
 		List<Object> cores = new ArrayList<Object>();
 
 		cores.add(10.0);
